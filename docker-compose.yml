@@ -1,20 +1,6 @@
 version: '3.8'
 
 services:
-  traefik:
-    image: traefik:latest
-    container_name: traefik
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - ./traefik.toml:/traefik.toml
-      - ./traefik_dynamic.toml:/traefik_dynamic.toml
-      - ./acme.json:/acme.json
-    networks:
-      - web
-
   #ssh -L 11434:127.0.0.1:11434 -p 2222 models@localhost
   ollama:
     image: ghcr.io/ollama-webui/ollama-webui:main
@@ -22,9 +8,7 @@ services:
     ports:
       - 3000:8080
     networks:
-      - web
-    depends_on:
-      - traefik
+      - traefik-public
 
   vps-ollama:
     build: .
@@ -32,13 +16,11 @@ services:
     ports:
       - "2222:22"
     volumes:
-      - ./Makefile:/home/models/Makefile
-      - ./data-ollama:/home/models
+      - ollama-Makefile:/home/models/Makefile
+      - ollama-data:/home/models
       - ollama:/usr/local/bin
     networks:
-      - web
-    depends_on:
-      - traefik
+      - traefik-public
     deploy:
       resources:
         reservations:
@@ -54,12 +36,10 @@ services:
     ports:
       - "2223:22"
     volumes:
-      - ./Makefile:/home/models/Makefile
-      - ./data-fooocus:/home/models
+      - vps-foocus-Makefile:/home/models/Makefile
+      - vps-foocus-data:/home/models
     networks:
-      - web
-    depends_on:
-      - traefik
+      - traefik-public
     deploy:
       resources:
         reservations:
@@ -75,12 +55,10 @@ services:
     ports:
       - "2224:22"
     volumes:
-      - ./Makefile:/home/models/Makefile
-      - ./data-diffusion:/home/models
+      - vps-diffusion-Makefile:/home/models/Makefile
+      - vps-diffusion-data:/home/models
     networks:
-      - web
-    depends_on:
-      - traefik
+      - traefik-public
     deploy:
       resources:
         reservations:
@@ -91,7 +69,13 @@ services:
 
 volumes:
   ollama:
+  ollama-data:
+  ollama-Makefile:
+  vps-diffusion-Makefile:
+  vps-diffusion-data:
+  vps-foocus-Makefile:
+  vps-foocus-data:
 
 networks:
-  web:
+  traefik-public:
     external: true
