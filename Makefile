@@ -38,6 +38,7 @@ run-ollama:
 	@ollama serve &
 	@sleep 5
 	@ollama pull llama2-uncensored:7b
+	@ollama pull llama3
 	@ollama pull openhermes2.5-mistral:7b
 	@ollama pull codellama:7b
 	@ollama pull deepseek-coder:6.7b
