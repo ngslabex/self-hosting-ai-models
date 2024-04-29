@@ -25,7 +25,7 @@ RUN apt-get update && apt-get install -y \
     libtcmalloc-minimal4 \
     apt-utils \
     htop \
-    gdu
+    libgdu
 
 # Install Docker
 RUN curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add - && \
